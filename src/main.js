@@ -9,6 +9,8 @@ import {
   DirectionalLight
 } from 'three';
 
+import FPSCamera from './FPSCamera';
+
 const scene = new Scene;
 const camera = new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
@@ -29,6 +31,16 @@ scene.add(light);
 const dirLight = new DirectionalLight(0xffffff);
 dirLight.position.set(1, 1, 1).normalize();
 scene.add(dirLight);
+
+const player = new FPSCamera(renderer.domElement);
+scene.add(player);
+
+const sensitivity = 0.0005;
+
+player.onRotate(rotate => {
+  camera.rotation.y = rotate.x * sensitivity;
+  camera.rotation.x = rotate.y * sensitivity;
+});
 
 function render() {
   cube.rotation.x += 0.05;

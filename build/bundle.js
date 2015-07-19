@@ -46,7 +46,13 @@
 
 	'use strict';
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 	var _three = __webpack_require__(1);
+
+	var _FPSCamera = __webpack_require__(2);
+
+	var _FPSCamera2 = _interopRequireDefault(_FPSCamera);
 
 	var scene = new _three.Scene();
 	var camera = new _three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -68,6 +74,16 @@
 	var dirLight = new _three.DirectionalLight(0xffffff);
 	dirLight.position.set(1, 1, 1).normalize();
 	scene.add(dirLight);
+
+	var player = new _FPSCamera2['default'](renderer.domElement);
+	scene.add(player);
+
+	var sensitivity = 0.0005;
+
+	player.onRotate(function (rotate) {
+	  camera.rotation.y = rotate.x * sensitivity;
+	  camera.rotation.x = rotate.y * sensitivity;
+	});
 
 	function render() {
 	  cube.rotation.x += 0.05;
@@ -2428,6 +2444,74 @@
 	// TODO
 	// If the ending of curve is not connected to the starting
 	// or the next curve, then, this is not a real path
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+	var _three = __webpack_require__(1);
+
+	var FPSCamera = (function (_Group) {
+	  _inherits(FPSCamera, _Group);
+
+	  function FPSCamera(canvas) {
+	    _classCallCheck(this, FPSCamera);
+
+	    _get(Object.getPrototypeOf(FPSCamera.prototype), 'constructor', this).call(this);
+
+	    canvas.addEventListener('mousemove', this.handleMouse.bind(this));
+
+	    this._rotation = {
+	      x: 0,
+	      y: 0
+	    };
+
+	    this._listeners = [];
+	  }
+
+	  _createClass(FPSCamera, [{
+	    key: 'handleMouse',
+	    value: function handleMouse(_ref) {
+	      var _this = this;
+
+	      var movementX = _ref.movementX;
+	      var movementY = _ref.movementY;
+
+	      this._rotation = {
+	        x: this._rotation.x - movementX,
+	        y: this._rotation.y - movementY
+	      };
+
+	      this._listeners.map(function (cb) {
+	        return cb(_this._rotation);
+	      });
+	    }
+	  }, {
+	    key: 'onRotate',
+	    value: function onRotate(cb) {
+	      this._listeners.push(cb);
+	    }
+	  }]);
+
+	  return FPSCamera;
+	})(_three.Group);
+
+	exports['default'] = FPSCamera;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
